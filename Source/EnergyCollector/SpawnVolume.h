@@ -20,6 +20,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnyWhere, Category = "Spawning")
+		TSubclassOf<class APickUp> WhatToSpawn;
+
+	FTimerHandle SpawnTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+	float SpawnDelayRangeLow;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+	float SpawnDelayRangeHigh;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -32,5 +43,9 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* WhereToSpawn;
+
+	void SpawnPickup();
+
+	float SpawnDelay;
 
 };
