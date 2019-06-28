@@ -54,6 +54,9 @@ AEnergyCollectorCharacter::AEnergyCollectorCharacter()
 
 	InitialPower = 2000.0f;
 	CharacterPower = InitialPower;
+
+	SpeedFactor = 0.75f;
+	BaseSpeed = 10.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -186,4 +189,5 @@ float AEnergyCollectorCharacter::GetCurrentPower()
 void AEnergyCollectorCharacter::UpdatePower(float PowerChange)
 {
 	CharacterPower = CharacterPower + PowerChange;
+	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed + SpeedFactor + CharacterPower;
 }

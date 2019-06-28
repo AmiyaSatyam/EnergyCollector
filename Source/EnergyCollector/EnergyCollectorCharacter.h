@@ -78,12 +78,19 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Pickups")
 	void CollectPickups();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", Meta = (BlueprintProtected = "true"))
 	float InitialPower;
+
+	UPROPERTY(VisibleAnywhere, Category = "Power", Meta = (BlueprintProtected = "true"))
+	float SpeedFactor;
+
+	UPROPERTY(VisibleAnywhere, Category = "Power", Meta = (BlueprintProtected = "true"))
+	float BaseSpeed;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Power")
 	float CharacterPower;
+
 
 public:
 	/** Returns CameraBoom subobject **/

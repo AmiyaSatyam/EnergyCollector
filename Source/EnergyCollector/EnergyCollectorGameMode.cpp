@@ -4,6 +4,7 @@
 #include "EnergyCollectorCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 AEnergyCollectorGameMode::AEnergyCollectorGameMode()
 {
@@ -14,9 +15,29 @@ AEnergyCollectorGameMode::AEnergyCollectorGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	DecayRate = 0.01f;
+}
+
+void AEnergyCollectorGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AEnergyCollectorCharacter* MyCharacter = Cast<AEnergyCollectorCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (MyCharacter)
+	{
+		PowerToWin = (MyCharacter->GetInitialPower())*1.25f;
+	}
+
+	if (HUDWidgetClass != nullptr)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+		if (CurrentWidget != nullptr)
+		{
+			CurrentWidget->AddToViewport();
+		}
+	}
 }
 
 void AEnergyCollectorGameMode::Tick(float DeltaTime)
@@ -32,4 +53,9 @@ void AEnergyCollectorGameMode::Tick(float DeltaTime)
 		}
 		
 	}
+}
+
+float AEnergyCollectorGameMode::GetPowerToWin() const
+{
+	return PowerToWin;
 }
