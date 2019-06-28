@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "PickUp.h"
+#include "EnergyPickUp.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AEnergyCollectorCharacter
@@ -43,8 +45,15 @@ AEnergyCollectorCharacter::AEnergyCollectorCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	CollectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionSphere"));
+	CollectionSphere->AttachTo(RootComponent);
+	CollectionSphere->SetSphereRadius(200.0f);
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	InitialPower = 2000.0f;
+	CharacterPower = InitialPower;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -56,6 +65,8 @@ void AEnergyCollectorCharacter::SetupPlayerInputComponent(class UInputComponent*
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	PlayerInputComponent->BindAction("Collect", IE_Pressed, this, &AEnergyCollectorCharacter::CollectPickups);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEnergyCollectorCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AEnergyCollectorCharacter::MoveRight);
@@ -131,4 +142,48 @@ void AEnergyCollectorCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AEnergyCollectorCharacter::CollectPickups()
+{
+	TArray<AActor*> CollectedActors;
+	CollectionSphere->GetOverlappingActors(CollectedActors);
+
+	float CollectedPower = 0;
+
+	for (int32 iCollected = 0; iCollected < CollectedActors.Num(); ++iCollected)
+	{
+		APickUp* const TestPickUp = Cast<APickUp>(CollectedActors[iCollected]);
+
+		if (TestPickUp && !TestPickUp->IsPendingKill() && TestPickUp->IsActive())
+		{
+			TestPickUp->WasCollected();
+
+			AEnergyPickUp* const TestBattery = Cast<AEnergyPickUp>(TestPickUp);
+			if (TestBattery)
+			{
+				CollectedPower += TestBattery->GetPower();
+			}
+
+			TestPickUp->setActive(false);
+		}
+	}
+	if (CollectedPower > 0)
+	{
+		UpdatePower(CollectedPower);
+	}
+}
+float AEnergyCollectorCharacter::GetInitialPower()
+{
+	return InitialPower;
+}
+
+float AEnergyCollectorCharacter::GetCurrentPower()
+{
+	return CharacterPower;
+}
+
+void AEnergyCollectorCharacter::UpdatePower(float PowerChange)
+{
+	CharacterPower = CharacterPower + PowerChange;
 }

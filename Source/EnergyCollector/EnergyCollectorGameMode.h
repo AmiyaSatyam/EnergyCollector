@@ -13,6 +13,12 @@ class AEnergyCollectorGameMode : public AGameModeBase
 
 public:
 	AEnergyCollectorGameMode();
+
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power")
+	float DecayRate;
 };
 
 

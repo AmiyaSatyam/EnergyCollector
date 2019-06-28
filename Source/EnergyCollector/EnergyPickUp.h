@@ -16,5 +16,13 @@ class ENERGYCOLLECTOR_API AEnergyPickUp : public APickUp
 
 public:
 	AEnergyPickUp();
+
+	void WasCollected_Implementation() override;
+
+	float GetPower();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Power", Meta = (BlueprintProtected = "true"))
+		float BatteryPower;
 	
 };

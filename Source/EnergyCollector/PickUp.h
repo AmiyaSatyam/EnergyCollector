@@ -33,6 +33,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	void setActive(bool NewPickupState);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void WasCollected();
+	virtual void WasCollected_Implementation();
+
 private:
 	/**static mesh to represent the pickup in the level*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup", meta = (AllowPrivateAccess = "true"))
