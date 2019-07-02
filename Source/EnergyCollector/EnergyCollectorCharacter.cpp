@@ -190,4 +190,6 @@ void AEnergyCollectorCharacter::UpdatePower(float PowerChange)
 {
 	CharacterPower = CharacterPower + PowerChange;
 	GetCharacterMovement()->MaxWalkSpeed = BaseSpeed + SpeedFactor + CharacterPower;
+
+	PowerChangeEffect();
 }

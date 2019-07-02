@@ -87,6 +87,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Power", Meta = (BlueprintProtected = "true"))
 	float BaseSpeed;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Power")
+		void PowerChangeEffect();
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Power")
 	float CharacterPower;

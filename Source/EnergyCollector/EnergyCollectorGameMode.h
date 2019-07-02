@@ -6,6 +6,15 @@
 #include "GameFramework/GameModeBase.h"
 #include "EnergyCollectorGameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class EEnergyPlayState : uint8
+{
+	EPlaying,
+	EGameOver,
+	EWon,
+	EUnknown
+};
+
 UCLASS(minimalapi)
 class AEnergyCollectorGameMode : public AGameModeBase
 {
@@ -21,6 +30,11 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintPure, Category = "Power")
+	EEnergyPlayState GetCurrentState() const;
+
+	void SetCurrentState(EEnergyPlayState NewState);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Power", Meta = (BlueprintProtected = "true"))
 	float DecayRate;
@@ -33,6 +47,13 @@ protected:
 
 	UPROPERTY()
 	class UUserWidget* CurrentWidget;
+
+private:
+	EEnergyPlayState CurrentState;
+
+	TArray <class ASpawnVolume*> SpawnVolumeActors;
+
+	void HandleNewState(EEnergyPlayState NewState);
 };
 
 

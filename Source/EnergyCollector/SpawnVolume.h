@@ -40,6 +40,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spawning")
 		FVector GetRandomPointInVolume();
 
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void SetSpawningActive(bool bShouldSpawn);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* WhereToSpawn;
